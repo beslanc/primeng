@@ -979,10 +979,23 @@ export class Dropdown extends BaseComponent implements OnInit, AfterViewInit, Af
             const filteredOptions =
                 !_filterBy && !this.filterFields && !this.optionValue
                     ? this.options.filter((option) => {
+                          let optionText = option.toString();
+                          let filterText = this._filterValue();
+                        
                           if (option.label) {
-                              return option.label.toString().toLowerCase().indexOf(this._filterValue().toLowerCase().trim()) !== -1;
+                              optionText = option.label.toString();
                           }
-                          return option.toString().toLowerCase().indexOf(this._filterValue().toLowerCase().trim()) !== -1;
+
+                          if (this.filterLocale) {
+                              optionText = optionText.toLocaleLowerCase(this.filterLocale);
+                              filterText = filterText.toLocaleLowerCase(this.filterLocale);
+                          } else {
+                              optionText = optionText.toLowerCase();
+                              filterText = filterText.toLowerCase();
+                          }    
+                            
+                          return option.indexOf(filter.trim()) !== -1;
+
                       })
                     : this.filterService.filter(options, this.searchFields(), this._filterValue().trim(), this.filterMatchMode, this.filterLocale);
 
